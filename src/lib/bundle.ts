@@ -29,7 +29,7 @@ function dominantCategory(events: SignalEvent[]): Category {
 
 /**
  * Deterministic bundle builder — turns a set of related events into a
- * readable signal cluster. No LLM required.
+ * readable findings cluster. No LLM required.
  */
 export function buildBundle(
   events: SignalEvent[],
@@ -47,7 +47,7 @@ export function buildBundle(
     `${CATEGORIES[category].label}: ${entities[0] ?? lead.title.slice(0, 48)}`;
 
   const summary =
-    `${events.length} connected signal${events.length === 1 ? '' : 's'} centered on ` +
+    `${events.length} related finding${events.length === 1 ? '' : 's'} about ` +
     `${entities.slice(0, 3).join(', ') || CATEGORIES[category].label.toLowerCase()}. ` +
     `Lead story: ${lead.title}. ${firstSentence(lead.summary)}` +
     (goal.trim() ? ` Goal: ${goal.trim()}` : '');
@@ -85,11 +85,11 @@ export function buildBundle(
     story_arc: storyArc,
     segment_outline: segmentOutline,
     recommended_title:
-      `What does ${entities[0] ?? 'this signal'} change? ${lead.title}`,
+      `What does ${entities[0] ?? 'this finding'} change? ${lead.title}`,
     thumbnail_idea:
       lead.source_name
-        ? `Inspect ${lead.source_name} first, then compare against connected ${CATEGORIES[category].label.toLowerCase()} signals`
-        : `Inspect the lead source, then compare against connected ${CATEGORIES[category].label.toLowerCase()} signals`,
+        ? `Inspect ${lead.source_name} first, then compare it with the other ${CATEGORIES[category].label.toLowerCase()} findings`
+        : `Inspect the lead source, then compare it with the other ${CATEGORIES[category].label.toLowerCase()} findings`,
     verification_checklist: verificationChecklist,
     source_urls: sourceUrls,
     created_at: new Date().toISOString(),

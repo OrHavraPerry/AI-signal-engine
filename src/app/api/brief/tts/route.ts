@@ -36,7 +36,7 @@ export async function POST(req: NextRequest) {
 
   const { model, speakerInstructions } = parsed.data;
   const ttsInstructions = [
-    'Read this as a concise personal signal brief, not a document export. Use natural pacing, emphasize what was found, what matters, and what needs verification. Avoid creator, video, thumbnail, or publishing language.',
+    'Read this as a concise personal findings brief, not a document export. Use natural pacing, emphasize what was found, why it matters, and what needs verification. Avoid creator, video, thumbnail, graph, or publishing language.',
     speakerInstructions.trim(),
   ]
     .filter(Boolean)
@@ -79,7 +79,7 @@ export async function POST(req: NextRequest) {
     status: 200,
     headers: {
       'Content-Type': 'audio/mpeg',
-      'Content-Disposition': `attachment; filename="signal-brief-${date}.mp3"`,
+      'Content-Disposition': `attachment; filename="findings-brief-${date}.mp3"`,
       'Cache-Control': 'no-store',
     },
   });

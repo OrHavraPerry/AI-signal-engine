@@ -28,7 +28,7 @@ export default function BriefPage() {
   const [generating, setGenerating] = useState(false);
   const [ttsModel, setTtsModel] = useState<OpenAITtsModel>(DEFAULT_OPENAI_TTS_MODEL);
   const [speakerInstructions, setSpeakerInstructions] = useState(
-    'Sound like a concise personal research analyst: calm, direct, and practical. Prioritize what matters and what needs verification.',
+    'Sound like a concise personal research analyst: calm, direct, and practical. Prioritize what was found, why it matters, and what needs verification.',
   );
   const [ttsGenerating, setTtsGenerating] = useState(false);
   const [ttsError, setTtsError] = useState('');
@@ -103,7 +103,7 @@ export default function BriefPage() {
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `signal-brief-${brief.generated_at.slice(0, 10)}.md`;
+    a.download = `findings-brief-${brief.generated_at.slice(0, 10)}.md`;
     a.click();
     URL.revokeObjectURL(url);
   }
@@ -113,7 +113,7 @@ export default function BriefPage() {
       <header className="glass flex flex-wrap items-center gap-3 px-5 py-4">
         <div>
           <h1 className="bg-gradient-to-r from-cyan-300 via-sky-200 to-violet-300 bg-clip-text text-xl font-bold text-transparent">
-            Signal Brief
+            Findings Brief
           </h1>
           {brief && (
             <p className="text-xs text-slate-500">
@@ -208,7 +208,7 @@ export default function BriefPage() {
                 <audio controls src={audioUrl} className="w-full" />
                 <a
                   href={audioUrl}
-                  download={`signal-brief-${brief.generated_at.slice(0, 10)}.mp3`}
+                  download={`findings-brief-${brief.generated_at.slice(0, 10)}.mp3`}
                   className="text-xs font-semibold uppercase tracking-[0.12em] text-cyan-300 hover:underline"
                 >
                   Download MP3
@@ -221,7 +221,7 @@ export default function BriefPage() {
             <p className="text-sm leading-relaxed text-slate-200">{brief.executive_summary}</p>
           </Section>
 
-          <Section title="Lead Signal" accent="#34d399">
+          <Section title="First Finding" accent="#34d399">
             <p className="text-sm font-medium leading-relaxed text-emerald-200">{brief.strongest_angle}</p>
           </Section>
 
@@ -235,7 +235,7 @@ export default function BriefPage() {
                 ))}
               </ol>
             </Section>
-            <Section title="Evidence To Inspect" accent="#a78bfa">
+            <Section title="Evidence Behind The Findings" accent="#a78bfa">
               <ol className="space-y-2 text-sm text-slate-200">
                 {brief.thumbnail_ideas.map((t, i) => (
                   <li key={i} className="flex gap-2">
@@ -246,7 +246,7 @@ export default function BriefPage() {
             </Section>
           </div>
 
-          <Section title="Signal Clusters" accent="#fbbf24">
+          <Section title="Related Findings" accent="#fbbf24">
             <div className="space-y-4">
               {brief.bundles.length === 0 && <p className="text-sm text-slate-500">No bundles — board too sparse.</p>}
               {brief.bundles.map((b, i) => (

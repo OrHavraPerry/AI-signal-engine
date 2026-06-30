@@ -109,18 +109,16 @@ export function generateBrief(
   const executiveSummary =
     live.length === 0
       ? 'The board is empty. Run a demo scan or point Hermes at /api/events to populate the map.'
-      : `Across ${live.length} tracked signals, the board is dominated by ${topCats.join(', ')}. ` +
-        `The most important signal to inspect first is "${lead?.title}". ` +
-        `${riskyCount} signal${riskyCount === 1 ? '' : 's'} ${
+      : `Across ${live.length} findings, the strongest areas are ${topCats.join(', ')}. ` +
+        `The first finding to read is "${lead?.title}". ` +
+        `${riskyCount} finding${riskyCount === 1 ? '' : 's'} ${
           riskyCount === 1 ? 'carries' : 'carry'
         } elevated risk or low confidence and must not be presented as confirmed. ` +
         `There are ${verifyCount} open verification items to clear before acting on these results.`;
 
   const strongestAngle = lead
-    ? `${lead.title} — backed by ${
-        lead.connections.filter((c) => c.resolved_target_id).length
-      } connected signal(s), ${lead.confidence} confidence, interest ${lead.viewer_interest_score}/10, novelty ${lead.novelty_score}/10.`
-    : 'No signals on the board yet.';
+    ? `${lead.title} — ${lead.confidence} confidence, interest ${lead.viewer_interest_score}/10, novelty ${lead.novelty_score}/10. ${firstSentence(lead.summary) || ''}`
+    : 'No findings on the board yet.';
 
   // --- follow-up questions (stored in title_ideas for compatibility)
   const safeForTitles = ranked.filter((e) => e.risk_score <= config.maxRiskForTitleIdeas);
@@ -135,8 +133,8 @@ export function generateBrief(
   // --- evidence worth inspecting (stored in thumbnail_ideas for compatibility)
   const thumbnailIdeas = unique([
     ...ranked.map((e) => `${e.source_name || 'Primary source'}: ${e.title}`).filter(Boolean),
-    ...bundleList.map((b) => `Connection cluster: ${b.name}`),
-    'Open the map relationships and inspect which signals are supported by more than one source.',
+    ...bundleList.map((b) => `Related findings: ${b.name}`),
+    'Compare the top findings against primary sources and independent coverage.',
   ]).slice(0, 5);
 
   // --- reading path
@@ -149,7 +147,7 @@ export function generateBrief(
             (b, i) => `Cluster ${i + 1} — ${b.name}: ${firstSentence(b.summary)}`,
           ),
           `Trust pass — clear or downgrade the ${verifyCount} open verification items before treating anything as actionable.`,
-          'Next watch — decide which signals deserve follow-up research, automation, or a saved note.',
+          'Next watch — decide which findings deserve follow-up research, automation, or a saved note.',
         ];
 
   const talkingPoints = ranked

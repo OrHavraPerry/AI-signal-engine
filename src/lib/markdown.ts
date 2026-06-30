@@ -1,27 +1,27 @@
 import type { CreatorBrief } from './types';
 
-/** Serializes a signal brief to clean markdown. Safe to use client-side. */
+/** Serializes a findings brief to clean markdown. Safe to use client-side. */
 export function briefToMarkdown(brief: CreatorBrief): string {
   const lines: string[] = [];
   const section = (title: string) => lines.push('', `## ${title}`, '');
 
-  lines.push('# AI Signal Engine — Signal Brief');
+  lines.push('# AI Signal Engine — Findings Brief');
   lines.push('');
   lines.push(`> Generated: ${new Date(brief.generated_at).toLocaleString()}`);
 
   section('Executive Summary');
   lines.push(brief.executive_summary);
 
-  section('Lead Signal');
+  section('First Finding');
   lines.push(brief.strongest_angle);
 
   section('Follow-Up Questions');
   brief.title_ideas.forEach((t, i) => lines.push(`${i + 1}. ${t}`));
 
-  section('Evidence To Inspect');
+  section('Evidence Behind The Findings');
   brief.thumbnail_ideas.forEach((t, i) => lines.push(`${i + 1}. ${t}`));
 
-  section('Signal Clusters');
+  section('Related Findings');
   brief.bundles.forEach((b, i) => {
     lines.push(`### ${i + 1}. ${b.name}`, '');
     lines.push(`**Summary:** ${b.summary}`, '');

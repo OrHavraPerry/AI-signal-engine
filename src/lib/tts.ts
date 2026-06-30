@@ -25,9 +25,9 @@ export function createBriefTtsScript(brief: CreatorBrief): string {
     .join(', ');
 
   const sections = [
-    `Here is your AI signal brief for ${new Date(brief.generated_at).toLocaleString()}.`,
+    `Here is your AI findings brief for ${new Date(brief.generated_at).toLocaleString()}.`,
     `The short version: ${brief.executive_summary}`,
-    `The signal to inspect first is this: ${brief.strongest_angle}`,
+    `The first finding to inspect is this: ${brief.strongest_angle}`,
     leadBundle
       ? `The main cluster to watch is ${leadBundle.name}. ${leadBundle.summary} The chain is: ${leadBundle.story_arc}`
       : '',
