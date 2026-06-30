@@ -3,6 +3,12 @@
 import { useCallback, useEffect, useState } from 'react';
 import Link from 'next/link';
 import { briefToMarkdown } from '@/lib/markdown';
+import {
+  DEFAULT_OPENAI_TTS_MODEL,
+  OPENAI_TTS_MODELS,
+  supportsSpeakerInstructions,
+  type OpenAITtsModel,
+} from '@/lib/tts';
 import type { CreatorBrief } from '@/lib/types';
 
 function Section({ title, accent, children }: { title: string; accent: string; children: React.ReactNode }) {
@@ -20,6 +26,13 @@ export default function BriefPage() {
   const [brief, setBrief] = useState<CreatorBrief | null>(null);
   const [loading, setLoading] = useState(true);
   const [generating, setGenerating] = useState(false);
+  const [ttsModel, setTtsModel] = useState<OpenAITtsModel>(DEFAULT_OPENAI_TTS_MODEL);
+  const [speakerInstructions, setSpeakerInstructions] = useState(
+    'Sound like a sharp tech-news YouTube narrator: calm, curious, and credible. Keep the pacing tight.',
+  );
+  const [ttsGenerating, setTtsGenerating] = useState(false);
+  const [ttsError, setTtsError] = useState('');
+  const [audioUrl, setAudioUrl] = useState('');
 
   useEffect(() => {
     fetch('/api/brief')
@@ -29,6 +42,12 @@ export default function BriefPage() {
       .finally(() => setLoading(false));
   }, []);
 
+  useEffect(() => {
+    return () => {
+      if (audioUrl) URL.revokeObjectURL(audioUrl);
+    };
+  }, [audioUrl]);
+
   const regenerate = useCallback(async () => {
     setGenerating(true);
     try {
@@ -36,11 +55,47 @@ export default function BriefPage() {
       if (res.ok) {
         const d = (await res.json()) as { brief: CreatorBrief };
         setBrief(d.brief);
+        setTtsError('');
+        setAudioUrl((current) => {
+          if (current) URL.revokeObjectURL(current);
+          return '';
+        });
       }
     } finally {
       setGenerating(false);
     }
   }, []);
+
+  const generateTts = useCallback(async () => {
+    if (!brief) return;
+    setTtsGenerating(true);
+    setTtsError('');
+    try {
+      const res = await fetch('/api/brief/tts', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          model: ttsModel,
+          speakerInstructions: supportsSpeakerInstructions(ttsModel) ? speakerInstructions : '',
+        }),
+      });
+
+      if (!res.ok) {
+        const body = (await res.json().catch(() => null)) as { error?: string; detail?: string } | null;
+        setTtsError(body?.error ?? 'TTS generation failed');
+        return;
+      }
+
+      const blob = await res.blob();
+      const nextUrl = URL.createObjectURL(blob);
+      setAudioUrl((current) => {
+        if (current) URL.revokeObjectURL(current);
+        return nextUrl;
+      });
+    } finally {
+      setTtsGenerating(false);
+    }
+  }, [brief, speakerInstructions, ttsModel]);
 
   function exportMarkdown() {
     if (!brief) return;
@@ -104,6 +159,64 @@ export default function BriefPage() {
 
       {brief && (
         <>
+          <Section title="Voiceover TTS" accent="#22d3ee">
+            <div className="grid gap-4 md:grid-cols-[minmax(0,1fr)_180px]">
+              <label className="grid gap-1.5 text-xs font-semibold uppercase tracking-[0.14em] text-slate-400">
+                OpenAI model
+                <select
+                  value={ttsModel}
+                  onChange={(event) => setTtsModel(event.target.value as OpenAITtsModel)}
+                  className="rounded-lg border border-slate-700 bg-slate-950/70 px-3 py-2 text-sm normal-case tracking-normal text-slate-100 outline-none transition focus:border-cyan-400"
+                >
+                  {OPENAI_TTS_MODELS.map((model) => (
+                    <option key={model} value={model}>
+                      {model}
+                    </option>
+                  ))}
+                </select>
+              </label>
+              <div className="flex items-end">
+                <button
+                  onClick={generateTts}
+                  disabled={!brief || ttsGenerating}
+                  className="w-full rounded-lg bg-cyan-400 px-3 py-2 text-xs font-bold uppercase tracking-[0.12em] text-slate-950 transition hover:brightness-110 disabled:opacity-40"
+                >
+                  {ttsGenerating ? 'Generating audio…' : 'Generate TTS'}
+                </button>
+              </div>
+            </div>
+
+            <label className="mt-4 grid gap-1.5 text-xs font-semibold uppercase tracking-[0.14em] text-slate-400">
+              Speaker instructions
+              <textarea
+                value={speakerInstructions}
+                onChange={(event) => setSpeakerInstructions(event.target.value)}
+                disabled={!supportsSpeakerInstructions(ttsModel)}
+                rows={3}
+                className="resize-y rounded-lg border border-slate-700 bg-slate-950/70 px-3 py-2 text-sm normal-case leading-relaxed tracking-normal text-slate-100 outline-none transition placeholder:text-slate-600 focus:border-cyan-400 disabled:cursor-not-allowed disabled:opacity-50"
+              />
+            </label>
+            <p className="mt-2 text-xs text-slate-500">
+              {supportsSpeakerInstructions(ttsModel)
+                ? 'Speaker instructions are sent to OpenAI for this model.'
+                : 'This OpenAI model does not support speaker instructions, so the textbox is disabled.'}
+            </p>
+
+            {ttsError && <p className="mt-3 text-sm text-rose-300">{ttsError}</p>}
+            {audioUrl && (
+              <div className="mt-4 grid gap-3 rounded-lg border border-slate-700/50 bg-slate-950/35 p-3">
+                <audio controls src={audioUrl} className="w-full" />
+                <a
+                  href={audioUrl}
+                  download={`creator-brief-${brief.generated_at.slice(0, 10)}.mp3`}
+                  className="text-xs font-semibold uppercase tracking-[0.12em] text-cyan-300 hover:underline"
+                >
+                  Download MP3
+                </a>
+              </div>
+            )}
+          </Section>
+
           <Section title="Executive Summary" accent="#22d3ee">
             <p className="text-sm leading-relaxed text-slate-200">{brief.executive_summary}</p>
           </Section>
