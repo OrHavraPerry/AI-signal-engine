@@ -31,19 +31,26 @@ ${compatibility}
 ${watch}${ignored}
 
 YOUR TASK
-Scan the AI landscape for developments a tech-news YouTube creator should know about: model releases, agent updates, open-source drops, safety research, pricing changes, product launches, infrastructure news, and credible rumors.
+Scan for practical, under-covered developments a technical creator/operator should know about. Focus on the priority watch topics above: agent infrastructure, coding agents, AI safety/security for agent deployment, creator-intelligence systems, and the temporary recent-interest lane. Model releases, open-source drops, pricing changes, infrastructure news, and credible rumors only matter when they change what agents, builders, self-hosters, or technical creators can do.
+
+RELEVANCE FILTER
+- Prefer stories that help a technical creator/operator build, self-host, automate, secure, explain, or evaluate agent systems.
+- High-priority signals usually have at least one of these: a usable tool, a workflow-changing feature, an open/local deployment angle, a safety/security implication, a creator-ready explanation, or a pattern worth adapting into a local agent stack.
+- Treat the "Recent Or curiosity lane" as a temporary 3-7 day boost, not a permanent identity. Use it to notice adjacent tools and workflows around the user's current experiments.
+- Down-rank generic AI news, funding/acquisition items, benchmark-only posts, and big-lab announcements unless they have a concrete workflow, safety, creator, or operator implication.
 
 HOW TO RESEARCH
 - LOCAL BROWSER FIRST: if your agent environment has a local browser available (Hermes Agent Browser Engine auto/Chrome, Playwright, Browser Use, computer browser, or another browser tool), use it to search the live web directly. This local browser path should not require a Browser Use, Browserbase, Brave, or Exa key.
 - If running Hermes CLI, the easiest setup is to start the repo's browser launcher first (Windows: launch-browser.bat, Linux/VPS/macOS: ./launch-browser.sh; on a fresh Linux VPS, run ./install-browser-linux.sh first if no Chromium-family browser is installed). It opens a CDP browser at 127.0.0.1:9222. Then run /browser connect and /browser status in Hermes CLI before starting research.
 - HUNT THE SLEPT-ON MOVES. Mainstream headlines (big-lab launches everyone covers) are worth at most 2-3 of your signals. The creator's edge is what other channels MISS. With the browser, check these first:
-    https://github.com/trending (daily + weekly, look for AI/agent repos exploding from nowhere)
-    https://news.ycombinator.com (front page + /show — small-lab releases and dev tools surface here first)
-    https://www.reddit.com/r/LocalLLaMA/top/?t=day (open-weights drops, quantization wins, local-inference breakthroughs)
-    https://huggingface.co/models?sort=trending (quiet model releases with real traction)
-    Changelogs and release pages of agent tools (Cursor, Ollama, vLLM, LangChain, OpenRouter) — quiet feature ships and pricing changes hide there.
-- Examples of slept-on gold: a 7B model matching last year's frontier, a pricing change buried in a changelog, an agent framework quietly adding computer use, an unknown lab's weights topping a leaderboard, infra moves that signal someone's training run.
-- Also run normal searches ("AI model release today", "site:github.com release LLM") and open primary sources from results.
+    https://github.com/trending (daily + weekly, look for AI/agent/MCP/local-first repos exploding from nowhere)
+    https://news.ycombinator.com (front page + /show — small-lab releases, dev tools, operator consoles, and agent workflows surface here first)
+    https://www.reddit.com/r/LocalLLaMA/top/?t=day (open weights, local inference, quantization wins, local-agent pain, model release drama)
+    https://huggingface.co/models?sort=trending (quiet model releases with real traction, especially coding/agentic/local models)
+    Changelogs and release pages of agent tools (OpenAI Codex, Claude Code, Cursor, OpenHands, Ollama, vLLM, LangChain/LangGraph, OpenRouter, MCP servers) — quiet feature ships, safety changes, and pricing/access changes hide there.
+    Safety/security sources (Anthropic research, METR, Apollo, arXiv, MITRE/ATT&CK-adjacent work) — prioritize findings that change how agents should be deployed or constrained.
+- Examples of slept-on gold: an agent console that solves orchestration pain, a coding-agent feature that changes review/test loops, a small open model with serious local-agent capability, a prompt-injection or cyber result that changes tool-permission design, a pricing/access change that makes self-hosting practical, or a signal-dashboard/research workflow worth copying.
+- Also run targeted searches such as "agent infrastructure", "MCP server release", "coding agent changelog", "AI agent sandboxing", "prompt injection agent tools", "local agent dashboard", "signal intelligence dashboard", and "site:github.com agent orchestrator".
 - If you have paid/free web search API tools (Brave, Exa, Firecrawl), you may use them too, but do not require them.
 - Only use RSS after local browser/search is unavailable or fails. RSS is the no-search fallback, not the preferred path.
 - RSS fallback feeds (ordered: slept-on sources first, mainstream last):

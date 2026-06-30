@@ -253,11 +253,11 @@ export const DEFAULT_CONFIG: AppConfig = {
   maxRiskForTitleIdeas: 8,
   showEntities: true,
   watchTopics: [
-    'frontier models',
-    'coding agents',
-    'open-source weights',
-    'AI safety research',
-    'GPU pricing',
+    'Agent infrastructure and OpenClaw-adjacent systems: local agents, self-hosted dashboards, remote hosts, MCP, computer/browser-use agents, subagents, memory, cron/task orchestration, and agent fleets',
+    'Coding agents and engineering workflows: Codex, Claude Code, Cursor, OpenHands, SWE-bench/Terminal-Bench tooling, agentic PR/review/test loops, repo automation, and workflow orchestrators',
+    'AI safety and security for practical agent deployment: tool permissions, sandboxing, data-flow control, prompt-injection defenses, cyber misuse research, autonomy evaluations, and exploit-capability reports',
+    'Creator intelligence and signal-mapping systems: research dashboards, source ingestion, relationship maps, briefs, evidence tracking, trend clustering, creator workflow automation',
+    'Recent Or curiosity lane: AI Signal Engine, Hermes-style research agents, OpenClaw workflows, agent dashboards, prompt design, self-hosted operator consoles, and closely adjacent experiments',
   ],
   ignoredTopics: [],
   verificationRules:
