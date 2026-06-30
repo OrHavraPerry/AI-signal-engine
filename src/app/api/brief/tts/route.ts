@@ -35,6 +35,12 @@ export async function POST(req: NextRequest) {
   }
 
   const { model, speakerInstructions } = parsed.data;
+  const ttsInstructions = [
+    'Read this as a concise creator voice brief, not a document export. Use natural pacing, light emphasis on story angles, and a credible tech-news narrator tone.',
+    speakerInstructions.trim(),
+  ]
+    .filter(Boolean)
+    .join(' ');
   const payload: Record<string, unknown> = {
     model,
     input: createBriefTtsScript(brief),
@@ -42,8 +48,8 @@ export async function POST(req: NextRequest) {
     response_format: 'mp3',
   };
 
-  if (supportsSpeakerInstructions(model) && speakerInstructions.trim()) {
-    payload.instructions = speakerInstructions.trim();
+  if (supportsSpeakerInstructions(model)) {
+    payload.instructions = ttsInstructions;
   }
 
   const response = await fetch('https://api.openai.com/v1/audio/speech', {
