@@ -25,20 +25,20 @@ export function createBriefTtsScript(brief: CreatorBrief): string {
     .join(', ');
 
   const sections = [
-    `Here is the creator brief for ${new Date(brief.generated_at).toLocaleString()}.`,
+    `Here is your AI signal brief for ${new Date(brief.generated_at).toLocaleString()}.`,
     `The short version: ${brief.executive_summary}`,
-    `The best video angle is this: ${brief.strongest_angle}`,
+    `The signal to inspect first is this: ${brief.strongest_angle}`,
     leadBundle
-      ? `The main story cluster to watch is ${leadBundle.name}. ${leadBundle.summary} The arc is: ${leadBundle.story_arc}`
+      ? `The main cluster to watch is ${leadBundle.name}. ${leadBundle.summary} The chain is: ${leadBundle.story_arc}`
       : '',
     brief.title_ideas.length > 0
-      ? `For packaging, the strongest title options are: ${sentenceList(brief.title_ideas, 3)}`
+      ? `Good follow-up questions are: ${sentenceList(brief.title_ideas, 3)}`
       : '',
     brief.talking_points.length > 0
-      ? `In the actual video, hit these beats: ${sentenceList(brief.talking_points, 5)}`
+      ? `The main findings are: ${sentenceList(brief.talking_points, 5)}`
       : '',
     brief.verification_checklist.length > 0
-      ? `Before filming, do not skip the trust check. Verify: ${sentenceList(brief.verification_checklist, 5)}`
+      ? `Before acting on this, verify: ${sentenceList(brief.verification_checklist, 5)}`
       : 'No elevated verification items are currently listed, but primary sources still need a final human check.',
     brief.risky_claims.length > 0
       ? `Important caution: ${sentenceList(brief.risky_claims, 3)}`

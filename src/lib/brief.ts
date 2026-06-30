@@ -110,44 +110,46 @@ export function generateBrief(
     live.length === 0
       ? 'The board is empty. Run a demo scan or point Hermes at /api/events to populate the map.'
       : `Across ${live.length} tracked signals, the board is dominated by ${topCats.join(', ')}. ` +
-        `The strongest creator angle right now is "${lead?.title_angle || lead?.title}". ` +
-        `${riskyCount} signal${riskyCount === 1 ? '' : 's'} carry elevated risk or low confidence and must not be presented as confirmed. ` +
-        `There are ${verifyCount} open verification items to clear before filming.`;
+        `The most important signal to inspect first is "${lead?.title}". ` +
+        `${riskyCount} signal${riskyCount === 1 ? '' : 's'} ${
+          riskyCount === 1 ? 'carries' : 'carry'
+        } elevated risk or low confidence and must not be presented as confirmed. ` +
+        `There are ${verifyCount} open verification items to clear before acting on these results.`;
 
   const strongestAngle = lead
-    ? `${lead.title_angle || lead.title} — backed by ${
+    ? `${lead.title} — backed by ${
         lead.connections.filter((c) => c.resolved_target_id).length
-      } connected signal(s), ${lead.confidence} confidence, viewer interest ${lead.viewer_interest_score}/10.`
+      } connected signal(s), ${lead.confidence} confidence, interest ${lead.viewer_interest_score}/10, novelty ${lead.novelty_score}/10.`
     : 'No signals on the board yet.';
 
-  // --- title ideas (top 5)
+  // --- follow-up questions (stored in title_ideas for compatibility)
   const safeForTitles = ranked.filter((e) => e.risk_score <= config.maxRiskForTitleIdeas);
   const titleIdeas = unique([
-    ...safeForTitles.map((e) => e.title_angle).filter(Boolean),
-    ...bundleList.map((b) => b.recommended_title),
+    ...safeForTitles.map((e) => `Should I dig deeper into ${e.related_entities[0] ?? e.title}? ${firstSentence(e.summary) || e.title}`),
+    ...bundleList.map((b) => `What is the practical implication of ${b.name}?`),
     ...safeForTitles.map(
-      (e) => `${e.related_entities[0] ?? 'AI'}: ${firstSentence(e.summary) || e.title}`,
+      (e) => `What changes if "${e.title}" is true?`,
     ),
   ]).slice(0, 5);
 
-  // --- thumbnail ideas (top 5)
+  // --- evidence worth inspecting (stored in thumbnail_ideas for compatibility)
   const thumbnailIdeas = unique([
-    ...ranked.map((e) => e.thumbnail_angle).filter(Boolean),
-    ...bundleList.map((b) => b.thumbnail_idea),
-    'Creator pointing at a glowing relationship map with two rival logos connected by a red "VS" edge',
+    ...ranked.map((e) => `${e.source_name || 'Primary source'}: ${e.title}`).filter(Boolean),
+    ...bundleList.map((b) => `Connection cluster: ${b.name}`),
+    'Open the map relationships and inspect which signals are supported by more than one source.',
   ]).slice(0, 5);
 
-  // --- segment outline
+  // --- reading path
   const segmentOutline =
     live.length === 0
       ? []
       : [
-          `Cold open (0:00) — ${lead.title_angle || lead.title}`,
+          `Start here — ${lead.title}`,
           ...bundleList.map(
-            (b, i) => `Segment ${i + 1} — ${b.name}: ${firstSentence(b.summary)}`,
+            (b, i) => `Cluster ${i + 1} — ${b.name}: ${firstSentence(b.summary)}`,
           ),
-          `Verification corner — walk through the ${verifyCount} open checks on screen (builds trust, great retention beat).`,
-          'Outro — what to watch next, and a call to comment with predictions.',
+          `Trust pass — clear or downgrade the ${verifyCount} open verification items before treating anything as actionable.`,
+          'Next watch — decide which signals deserve follow-up research, automation, or a saved note.',
         ];
 
   const talkingPoints = ranked

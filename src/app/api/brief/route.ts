@@ -15,7 +15,7 @@ export async function GET(req: NextRequest) {
 }
 
 /**
- * POST /api/brief — generates and stores a fresh creator brief from current
+ * POST /api/brief — generates and stores a fresh signal brief from current
  * events and bundles. v1 uses deterministic local logic (see src/lib/brief.ts);
  * swap in an LLM there later if a key is configured.
  */
@@ -25,7 +25,7 @@ export async function POST(req: NextRequest) {
   const brief = generateBrief(listEvents(), listBundles(), getConfig());
   saveBrief(brief);
   setStatus('ready');
-  log('Creator brief generated.', 'success');
+  log('Signal brief generated.', 'success');
 
   return Response.json({ brief }, { status: 201 });
 }

@@ -29,7 +29,7 @@ function dominantCategory(events: SignalEvent[]): Category {
 
 /**
  * Deterministic bundle builder — turns a set of related events into a
- * filmable story package. No LLM required.
+ * readable signal cluster. No LLM required.
  */
 export function buildBundle(
   events: SignalEvent[],
@@ -61,9 +61,9 @@ export function buildBundle(
     .join(' → ');
 
   const segmentOutline = [
-    `Cold open: ${lead.title_angle || lead.title}`,
-    ...ordered.map((e) => `Beat — ${e.title}: ${firstSentence(e.summary) || e.title}`),
-    'Close: what this means for the next 90 days, and what to watch.',
+    `Start with: ${lead.title}`,
+    ...ordered.map((e) => `Read next — ${e.title}: ${firstSentence(e.summary) || e.title}`),
+    'Close with the practical implication and the next source to monitor.',
   ];
 
   const verificationChecklist = unique(
@@ -85,10 +85,11 @@ export function buildBundle(
     story_arc: storyArc,
     segment_outline: segmentOutline,
     recommended_title:
-      lead.title_angle || `${entities[0] ?? 'AI'} just moved the goalposts: ${lead.title}`,
+      `What does ${entities[0] ?? 'this signal'} change? ${lead.title}`,
     thumbnail_idea:
-      lead.thumbnail_angle ||
-      `Split frame: ${entities[0] ?? 'the lead story'} logo vs a glowing "${CATEGORIES[category].label}" headline bar`,
+      lead.source_name
+        ? `Inspect ${lead.source_name} first, then compare against connected ${CATEGORIES[category].label.toLowerCase()} signals`
+        : `Inspect the lead source, then compare against connected ${CATEGORIES[category].label.toLowerCase()} signals`,
     verification_checklist: verificationChecklist,
     source_urls: sourceUrls,
     created_at: new Date().toISOString(),
